@@ -1,0 +1,12 @@
+/ApplicationTest.class
+/Filters.class
+/IntegrationTest.class
+/Module.class
+/application.conf
+/controllers/
+/filters/
+/logback.xml
+/models/
+/routes
+/services/
+/views/

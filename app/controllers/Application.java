@@ -1,8 +1,14 @@
 
 package controllers;
 
+import javax.inject.Inject;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import models.Task;
 import play.data.Form;
+import play.data.FormFactory;
 import play.mvc.Controller;
 import play.mvc.Result;
 
@@ -13,23 +19,39 @@ import play.mvc.Result;
  *
  */
 public class Application extends Controller {
+	final static Logger logger = LoggerFactory.getLogger("application");
+
+	@Inject
+	FormFactory formFactory;
 
 	public Result index() {
 		return redirect("/tasks");
-		// return ok(index.render("Your new application is ready."));
 	}
 
 	public Result tasks() {
-		Form<Task> taskForm = Form.form(Task.class);
+		Form<Task> taskForm = formFactory.form(Task.class).bindFromRequest();
 		return ok(views.html.index.render(Task.all(), taskForm));
-//		return TODO;
 	}
 
 	public Result newTask() {
-		return TODO;
+		Form<Task> taskForm = formFactory.form(Task.class).bindFromRequest();
+		Form<Task> filledForm = taskForm.bindFromRequest();
+		if (filledForm.hasErrors()) {
+			logger.error("error");
+			System.out.println("error");
+			// フォームにエラーが合った場合、エラーを再表示する
+			return badRequest(views.html.index.render(Task.all(), filledForm));
+		} else {
+			logger.info("else");
+			System.out.println("else");
+			// エラーがない場合、タスクを作成し、タスクリストにリダイレクトする
+			Task.create(filledForm.get());
+			return redirect(routes.Application.tasks());
+		}
 	}
 
 	public Result deleteTask(Long id) {
-		return TODO;
+		Task.delete(id);
+		return redirect(routes.Application.tasks());
 	}
 }

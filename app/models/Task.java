@@ -13,6 +13,7 @@ import com.avaje.ebean.Model;
 import play.data.validation.Constraints.Required;
 
 /**
+ * Taskフォーム
  * <p>
  * HTMLフォームの定義をカプセル化する
  * </p>

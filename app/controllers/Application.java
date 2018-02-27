@@ -21,20 +21,24 @@ import play.mvc.Result;
 public class Application extends Controller {
 	final static Logger logger = LoggerFactory.getLogger("application");
 
+	private Form<Task> taskForm;
+
 	@Inject
-	FormFactory formFactory;
+	public Application(FormFactory formFactory) {
+		// ラップしてフォーム送信
+		this.taskForm = formFactory.form(Task.class);
+	}
 
 	public Result index() {
 		return redirect("/tasks");
 	}
 
 	public Result tasks() {
-		Form<Task> taskForm = formFactory.form(Task.class).bindFromRequest();
 		return ok(views.html.index.render(Task.all(), taskForm));
 	}
 
 	public Result newTask() {
-		Form<Task> taskForm = formFactory.form(Task.class).bindFromRequest();
+		// リクエストからデータ取得
 		Form<Task> filledForm = taskForm.bindFromRequest();
 		if (filledForm.hasErrors()) {
 			logger.error("error");

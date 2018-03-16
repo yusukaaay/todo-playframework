@@ -1,4 +1,14 @@
-/evolutions/
+/ApplicationTest.class
+/Filters.class
+/IntegrationTest.class
+/Module.class
+/application.conf
 /controllers/
+/evolutions/
+/filters/
+/forms/
+/logback.xml
 /models/
+/routes
+/services/
 /views/

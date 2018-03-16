@@ -1,0 +1,12 @@
+@(msg: String, userForm: Form[User])
+
+@import helper._
+
+@msg
+
+@form(routes.Application.register(), 'class -> "form-horizontal", 'enctype -> "multipart/form-data") {
+	@inputText(userForm("username"))
+	@inputText(userForm("mail"))
+	@inputText(userForm("password"))
+    <button id="submit" type="submit" value="Submit" class="btn btn-primary">Sing up</button>
+}

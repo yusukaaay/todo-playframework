@@ -24,3 +24,8 @@ GET     /                           controllers.Application.index()
 GET     /tasks                  controllers.Application.tasks()
 POST    /tasks                  controllers.Application.newTask()
 POST    /tasks/:id/delete       controllers.Application.deleteTask(id: Long)
+
+GET     /signup                 controllers.Application.signup()
+GET     /register               controllers.Application.register()
+# login
+#GET     /login                  controllers.Application.login()

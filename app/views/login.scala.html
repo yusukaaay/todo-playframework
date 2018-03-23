@@ -1,0 +1,10 @@
+@(loginForm: Form[forms.LoginForm])
+
+@import helper._
+
+@form(routes.Application.authenticate) {
+	@inputText(loginForm("username"))
+	@inputText(loginForm("password"))
+	<br>
+	<button id="submit" type="submit" value="Submit" >Login</button>
+}

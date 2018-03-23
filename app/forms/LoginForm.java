@@ -2,15 +2,27 @@ package forms;
 
 import java.security.NoSuchAlgorithmException;
 
+import com.avaje.ebean.Model.Finder;
+
 import models.User;
 import play.data.validation.Constraints;
 
+/**
+ * Formのコンストラクタに渡されると、実際にフォームをPOSTする前に、
+ * このvalidate()メソッドを実行し、ユーザ/パスワードの組み合わせが正しいかどうかを判断してくれる
+ *
+ * @author yu-yama
+ *
+ */
 public class LoginForm {
 
 	@Constraints.Required
 	private String username;
 	@Constraints.Required
 	private String password;
+
+	// クエリを作成する為のfindヘルパー
+	public static Finder<Long, User> user = new Finder<>(User.class);
 
 	public String getUsername() {
 		return username;
@@ -36,11 +48,7 @@ public class LoginForm {
 	}
 
 	public static User authenticate(String username, String password) throws java.security.NoSuchAlgorithmException {
-		// Model.Finder<Long, User> find = new Model.Finder<Long,
-		// User>(Long.class, User.class);
-		// return find.where().eq("username", username).eq("password",
-		// password).findUnique();
-		return null;
+		return user.where().eq("username", username).eq("password", password).findUnique();
 	}
 
 }

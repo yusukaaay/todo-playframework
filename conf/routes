@@ -18,14 +18,15 @@ GET     /assets/*file               controllers.Assets.versioned(path="/public",
 
 
 # Home page
-GET     /                           controllers.Application.index()
+GET     /                       controllers.Application.index()
 
 # Tasks
-GET     /tasks                  controllers.Application.tasks()
-POST    /tasks                  controllers.Application.newTask()
-POST    /tasks/:id/delete       controllers.Application.deleteTask(id: Long)
+GET     /tasks                  controllers.TaskController.tasks()
+POST    /tasks                  controllers.TaskController.newTask()
+POST    /tasks/:id/delete       controllers.TaskController.deleteTask(id: Long)
 
+# auth
 GET     /signup                 controllers.Application.signup()
 GET     /register               controllers.Application.register()
-# login
-#GET     /login                  controllers.Application.login()
+GET     /login                  controllers.Application.login()
+GET     /authenticate           controllers.Application.authenticate()

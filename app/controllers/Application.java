@@ -7,7 +7,7 @@ import javax.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import models.Task;
+import forms.LoginForm;
 import models.User;
 import play.data.Form;
 import play.data.FormFactory;
@@ -38,7 +38,6 @@ public class Application extends Controller {
 	// }
 	//
 	public Result index() {
-		num++;
 		logger.info(String.valueOf(num));
 		return redirect("/tasks");
 	}
@@ -63,7 +62,7 @@ public class Application extends Controller {
 	public Result register() {
 		// 投稿されたフォームの内容をuserFormオブジェクトとしてインスタンス化
 		Form<User> userForm = formFactory.form(User.class).bindFromRequest();
-		// もし、フォームの内容にエラーが無いようであれば
+		// フォームの内容にエラーが無いようであれば
 		if (!userForm.hasErrors()) {
 			// エンティティモデルであるUser オブジェクトにフォームの内容を登録する。
 			User userRecord = userForm.get();
@@ -75,31 +74,38 @@ public class Application extends Controller {
 		}
 	}
 
-	public Result tasks() {
-		Form<Task> taskForm = formFactory.form(Task.class);
-		return ok(views.html.index.render(Task.all(), taskForm));
+	/**
+	 * ログイン画面
+	 *
+	 * @return
+	 */
+	public Result login() {
+		// LoginFormクラスの各フィールドと同じ属性を持つFormオブジェクトを生成
+		Form<LoginForm> loginForm = formFactory.form(LoginForm.class);
+		return ok(views.html.login.render(loginForm));
 	}
 
-	public Result newTask() {
-		// リクエストからデータ取得
-		Form<Task> taskForm = formFactory.form(Task.class);
-		Form<Task> filledForm = taskForm.bindFromRequest();
-		if (filledForm.hasErrors()) {
-			logger.error("error");
-			System.out.println("error");
-			// フォームにエラーが合った場合、エラーを再表示する
-			return badRequest(views.html.index.render(Task.all(), filledForm));
+	/**
+	 * 認証処理
+	 *
+	 * @return
+	 */
+	public Result authenticate() {
+		Form<LoginForm> loginForm = formFactory.form(LoginForm.class).bindFromRequest();
+		if (loginForm.hasErrors()) {
+			Form<LoginForm> newLoginForm = formFactory.form(LoginForm.class);
+			return badRequest(views.html.login.render(newLoginForm));
 		} else {
-			logger.info("else");
-			System.out.println("else");
-			// エラーがない場合、タスクを作成し、タスクリストにリダイレクトする
-			Task.create(filledForm.get());
-			return redirect(routes.Application.tasks());
+			// エラーがない場合、
+			// セッション("username")にフォームに入力した値(username)を格納
+			session().clear();
+			session("username", loginForm.get().getUsername());
+			String returnUrl = ctx().session().get("returnUrl");
+			if (returnUrl == null || returnUrl.equals("")
+					|| returnUrl.equals(routes.Application.login().absoluteURL(request()))) {
+				returnUrl = "/tasks";
+			}
+			return redirect(returnUrl);
 		}
-	}
-
-	public Result deleteTask(Long id) {
-		Task.delete(id);
-		return redirect(routes.Application.tasks());
 	}
 }
